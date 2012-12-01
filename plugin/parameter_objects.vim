@@ -69,6 +69,10 @@ if !exists("g:no_parameter_object_maps") || !g:no_parameter_object_maps
   map      <leader>' <Plug>PrevParam
 endif
 
+function! s:curchar()
+  return getline('.')[getpos('.')[2]-1]
+endfunction
+
 function! s:MoveToNextNonSpace()
   let oldp = getpos('.')
   while strlen(getline('.')) < getpos('.')[2] || getline('.')[getpos('.')[2]-1]==' '
@@ -115,6 +119,10 @@ function! s:prev_param()
     let [ok, gotone] = <SID>find_param("i")
     if ok == 1
       normal! `kh
+      let c = <SID>curchar()
+      if c == ')' || c == ']'
+          normal! %
+      endif
       call <SID>focus_on_param()
     endif
   finally
@@ -162,7 +170,7 @@ function! s:parameter_object(mode)
     if ok != 1
       return
     endif
-    if a:mode == "a" && @l == ',' && !gotone
+    if a:mode == "a" && (@l == ',' || @l == ';') && !gotone
       normal! l
       call <SID>MoveToNextNonSpace()
       normal! h
@@ -181,12 +189,15 @@ endfunction
 
 function! s:find_param(mode)
   " Search for the start of the parameter text object
-  if searchpair('(', ',', ')', 'bWs', "s:skip()") <= 0
+  let opening = '[([]'
+  let closing = '[)\]]'
+  let middle = '[,;]'
+  if searchpair(opening, middle, closing, 'bWs', "s:skip()") <= 0
     return [0, 0]
   endif
 
   normal! "lylmk
-  if a:mode == "a" && @l == ','
+  if a:mode == "a" && (@l == ',' || @l == ';')
     echo "!".@l
     let gotone = 1
     normal! ml
@@ -203,7 +214,7 @@ function! s:find_param(mode)
   let c = v:count1
   while c
     " Search for the end of the parameter text object
-    if searchpair('(',',',')', 'W', "s:skip()") <= 0
+    if searchpair(opening, middle, closing, 'W', "s:skip()") <= 0
       normal! `'
       return [0, 0]
     endif
