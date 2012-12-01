@@ -60,7 +60,7 @@ if !exists("g:no_parameter_object_maps") || !g:no_parameter_object_maps
   omap     <silent> aa <Plug>ParameterObjectA
   vmap     <leader>p <Plug>Focus
   omap     <leader>p <Plug>Focus
-  map     <leader>p <Plug>Focus
+  map      <leader>p <Plug>Focus
   vmap     <leader>. <Plug>NextParam
   omap     <leader>. <Plug>NextParam
   map      <leader>. <Plug>NextParam
@@ -69,7 +69,7 @@ if !exists("g:no_parameter_object_maps") || !g:no_parameter_object_maps
   map      <leader>' <Plug>PrevParam
 endif
 
-function! s:MoveToprevNonSpace()
+function! s:MoveToNextNonSpace()
   let oldp = getpos('.')
   while strlen(getline('.')) < getpos('.')[2] || getline('.')[getpos('.')[2]-1]==' '
     normal! l
