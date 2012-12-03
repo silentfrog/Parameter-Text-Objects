@@ -17,9 +17,10 @@
 " operator mappings:
 "
 "    aa    "an argument", select an argument, including one comma (if there is
-"          one).
+"          one). Includes comma at left if there is one, includes comma at
+"          right otherwise.
 "
-"    ia    "inner argument", selectn a argument, not including commas.
+"    ia    "inner argument", select an argument, not including commas.
 "
 " If you would like to remap the commands then you can prevent the default
 " mappings from getting set if you set g:no_parameter_object_maps = 1 in your
@@ -95,7 +96,7 @@ function! s:next_param()
   try
     let [ok, gotone] = <SID>find_param("i")
     if ok == 1
-    normal `ml
+    normal! `ml
     call <SID>MoveToNextNonSpace()
     endif
   finally
